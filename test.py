@@ -4,16 +4,15 @@
 """
 # Python packages
 import argparse
-
+import torch
 # PyTorch & Pytorch Lightning
 from lightning import Trainer
-from torch.utils.flop_counter import FlopCounterMode
-import torch
 
 # Custom packages
 from src.dataset import TinyImageNetDatasetModule
 from src.network import SimpleClassifier
 import src.config as cfg
+from src.flopcounter import FlopCounterMode
 
 torch.set_float32_matmul_precision('medium')
 

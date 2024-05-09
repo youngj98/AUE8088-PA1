@@ -4,6 +4,7 @@
         - For better flexibility, consider using LightningCLI in PyTorch Lightning
 """
 # PyTorch & Pytorch Lightning
+import wandb
 from lightning.pytorch.loggers.wandb import WandbLogger
 from lightning.pytorch.callbacks import LearningRateMonitor, ModelCheckpoint
 from lightning import Trainer
@@ -29,7 +30,7 @@ if __name__ == "__main__":
     datamodule = TinyImageNetDatasetModule(
         batch_size = cfg.BATCH_SIZE,
     )
-
+    wandb.login(key = "87c974a015598c3d0c2eb780c5d1be4608a3814d", relogin = True)
     wandb_logger = WandbLogger(
         project = cfg.WANDB_PROJECT,
         save_dir = cfg.WANDB_SAVE_DIR,
