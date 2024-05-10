@@ -108,7 +108,7 @@ class SimpleClassifier(LightningModule):
         loss, scores, y = self._common_step(batch)
         accuracy = self.accuracy(scores, y)
         f1 = self.f1score(scores, y)
-        self.log_dict({'loss/train': loss, 'accuracy/train': accuracy, 'fl/train': f1},
+        self.log_dict({'loss/train': loss, 'accuracy/train': accuracy, 'f1/train': f1},
                       on_step=False, on_epoch=True, prog_bar=True, logger=True)
         return loss
 

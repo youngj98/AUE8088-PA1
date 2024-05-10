@@ -5,8 +5,6 @@ import torch
 class MyF1Score(Metric):
     def __init__(self):
         super().__init__()
-        self.add_state('total', default = torch.tensor(0), dist_reduce_fx = 'sum')
-        self.add_state('correct', default = torch.tensor(0), dist_reduce_fx = 'sum')
         self.add_state('true_positives', default = torch.tensor(0), dist_reduce_fx = 'sum')
         self.add_state('false_positives', default = torch.tensor(0), dist_reduce_fx = 'sum')
         self.add_state('false_negatives', default = torch.tensor(0), dist_reduce_fx = 'sum')
@@ -14,9 +12,6 @@ class MyF1Score(Metric):
     def update(self, preds, target):
         preds = torch.argmax(preds, dim = 1)
         assert preds.shape == target.shape, "Not equal"
-
-        correct = torch.sum(preds == target)
-        self.correct += correct
 
         true_positives = torch.sum((preds == 1) & (target == 1))
         false_positives = torch.sum((preds == 1) & (target == 0))
@@ -26,7 +21,6 @@ class MyF1Score(Metric):
         self.false_positives += false_positives
         self.false_negatives += false_negatives
 
-        self.total += target.numel()
 
     def compute(self):
         if (self.true_positives + self.false_positives) > 0:
