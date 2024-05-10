@@ -10,6 +10,7 @@ from torch import nn
 from torchvision import models
 from torchvision.models.alexnet import AlexNet
 import torch
+# import torch.nn as nn
 
 # Custom packages
 from src.metric import MyAccuracy
@@ -19,12 +20,37 @@ from src.util import show_setting
 
 
 # [TODO: Optional] Rewrite this class if you want
-class MyNetwork(AlexNet):
-    def __init__(self):
+class MyNetwork(nn.Module):
+    def __init__(self, num_classes: int = 1000, dropout: float = 0.5) -> None:
         super().__init__()
+        # _log_api_usage_once(self)
+        self.features = nn.Sequential(
+            nn.Conv2d(3, 64, kernel_size = 11, stride = 4, padding = 2),
+            nn.ReLU(inplace = True),
+            nn.MaxPool2d(kernel_size = 3, stride = 2),
+            nn.Conv2d(64, 192, kernel_size = 5, padding = 2),
+            nn.ReLU(inplace = True),
+            nn.MaxPool2d(kernel_size = 3, stride = 2),
+            nn.Conv2d(192, 384, kernel_size = 3, padding = 1),
+            nn.ReLU(inplace = True),
+            nn.Conv2d(384, 256, kernel_size = 3, padding = 1),
+            nn.ReLU(inplace = True),
+            nn.Conv2d(256, 256, kernel_size = 3, padding = 1),
+            nn.ReLU(inplace = True),
+            nn.MaxPool2d(kernel_size = 3, stride = 2),
+        )
+        self.avgpool = nn.AdaptiveAvgPool2d((6, 6))
+        self.classifier = nn.Sequential(
+            nn.Dropout(p = dropout),
+            nn.Linear(256 * 6 * 6, 4096),
+            nn.ReLU(inplace = True),
+            nn.Dropout(p = dropout),
+            nn.Linear(4096, 4096),
+            nn.ReLU(inplace = True),
+            nn.Linear(4096, num_classes),
+        )
 
         # [TODO] Modify feature extractor part in AlexNet
-
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # [TODO: Optional] Modify this as well if you want
